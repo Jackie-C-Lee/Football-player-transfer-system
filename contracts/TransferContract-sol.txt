@@ -1,0 +1,125 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract TransferContract {
+    // 转会记录结构体
+    struct Transfer {
+        address sellingClub;
+        address buyingClub;
+        uint256 playerId;
+        uint256 transferFee;
+        uint256 timestamp;
+        bool isValidated;
+        bool isCompleted;
+        string lshIncomeHash;
+        string lshExpenseHash;
+    }
+
+    // 俱乐部结构体
+    struct Club {
+        string name;
+        string country;
+        bool isRegistered;
+    }
+
+    // 状态变量
+    mapping(uint256 => Transfer) public transfers;
+    mapping(address => Club) public clubs;
+    mapping(address => bool) public registeredClubs;
+    uint256 public transferCount;
+    address public owner;
+
+    // 事件
+    event ClubRegistered(address indexed clubAddress, string name);
+    event TransferProposed(uint256 indexed transferId, address indexed seller, address indexed buyer);
+    event TransferValidated(uint256 indexed transferId, bool isLegitimate);
+    event TransferCompleted(uint256 indexed transferId);
+
+    // 修饰符
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    modifier onlyRegisteredClub() {
+        require(registeredClubs[msg.sender], "Only registered clubs can call this function");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // 注册俱乐部
+    function registerClub(string memory _name, string memory _country) public {
+        require(!registeredClubs[msg.sender], "Club already registered");
+
+        clubs[msg.sender] = Club({
+            name: _name,
+            country: _country,
+            isRegistered: true
+        });
+
+        registeredClubs[msg.sender] = true;
+        emit ClubRegistered(msg.sender, _name);
+    }
+
+    // 发起转会
+    function proposeTransfer(
+        address _buyingClub,
+        uint256 _playerId,
+        uint256 _transferFee,
+        string memory _lshIncomeHash,
+        string memory _lshExpenseHash
+    ) public onlyRegisteredClub {
+        require(registeredClubs[_buyingClub], "Buying club not registered");
+        require(_transferFee > 0, "Transfer fee must be greater than 0");
+
+        transferCount++;
+
+        transfers[transferCount] = Transfer({
+            sellingClub: msg.sender,
+            buyingClub: _buyingClub,
+            playerId: _playerId,
+            transferFee: _transferFee,
+            timestamp: block.timestamp,
+            isValidated: false,
+            isCompleted: false,
+            lshIncomeHash: _lshIncomeHash,
+            lshExpenseHash: _lshExpenseHash
+        });
+
+        emit TransferProposed(transferCount, msg.sender, _buyingClub);
+    }
+
+    // 验证转会
+    function validateTransfer(uint256 _transferId, bool _isLegitimate) public onlyOwner {
+        require(_transferId <= transferCount && _transferId > 0, "Invalid transfer ID");
+        require(!transfers[_transferId].isValidated, "Transfer already validated");
+
+        transfers[_transferId].isValidated = true;
+
+        if (_isLegitimate) {
+            transfers[_transferId].isCompleted = true;
+            emit TransferCompleted(_transferId);
+        }
+
+        emit TransferValidated(_transferId, _isLegitimate);
+    }
+
+    // 获取转会详情
+    function getTransfer(uint256 _transferId) public view returns (Transfer memory) {
+        require(_transferId <= transferCount && _transferId > 0, "Invalid transfer ID");
+        return transfers[_transferId];
+    }
+
+    // 获取俱乐部信息
+    function getClub(address _clubAddress) public view returns (Club memory) {
+        return clubs[_clubAddress];
+    }
+
+    // 检查俱乐部是否注册
+    function isClubRegistered(address _clubAddress) public view returns (bool) {
+        return registeredClubs[_clubAddress];
+    }
+}
