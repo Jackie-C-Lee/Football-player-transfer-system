@@ -163,27 +163,27 @@ def init_enhanced_database():
     )
     ''')
 
-    # 使用 Ganache 提供的前5个账户地址和私钥
+    # 使用 Ganache 提供的前5个账户地址和私钥。（具体的地址和密钥请从自己的ganache账号数据中获取）
     ganache_accounts = [
         {
-            'address': '0x4E6592A7fF45Cd40871d7317572E44B7f679475A',
-            'private_key': '0x40e1d4734a91b5a4a809eafc86910bec563674686b70665bb511171bba856b4e'  # 请从 Ganache 获取第1个账户的私钥
+            'address': '0x',
+            'private_key': '0x'  # 请从 Ganache 获取第1个账户的私钥
         },
         {
-            'address': '0x83Ba29C9e2df5c53aC6dF5Fb3b12f6152bb00D1f',
-            'private_key': '0x55ab6cefd4892ac4a48e0aa70dc16ca3c044cfc7d8d5fbf3ec71fa148497a331'  # 请从 Ganache 获取第2个账户的私钥
+            'address': '0x',
+            'private_key': '0x'  # 请从 Ganache 获取第2个账户的私钥
         },
         {
-            'address': '0xDbB27B1993240C7d821d92C013F3efc8f53d445b',
-            'private_key': '0x1557e61f76d0be8a3723f3733e45c33ebf217be82e3e83058d9fb22c60f9533b'  # 请从 Ganache 获取第3个账户的私钥
+            'address': '0x',
+            'private_key': '0x'  # 请从 Ganache 获取第3个账户的私钥
         },
         {
-            'address': '0xbf3058a88f9d305401091E3CA7e5d7177113B2cB',
-            'private_key': '0xd0bcb5c405666ebb29d1952eabbab58595c6a799b292f72fbd65844af1586a02'  # 请从 Ganache 获取第4个账户的私钥
+            'address': '0x',
+            'private_key': '0x'  # 请从 Ganache 获取第4个账户的私钥
         },
         {
-            'address': '0x9EFeC20E9Ab12dfB38552E0A61c51524061e539f',
-            'private_key': '0x6fe114cb0b0573cd373139dd9aa6b9fbba7544d0de76c2fa881236f23a4f0a01'  # 请从 Ganache 获取第5个账户的私钥
+            'address': '0x',
+            'private_key': '0x'  # 请从 Ganache 获取第5个账户的私钥
         },
     ]
 
